@@ -1,8 +1,15 @@
 cli:
 	DATAFILE=geodata/worldcities.zip@worldcities.csv go run cmd/cli/main.go
+	
 server:
 	DATAFILE=geodata/worldcities.zip@worldcities.csv PORT=7777 go run cmd/server/main.go
+
 build:
-	go build  -o whereamid cmd/server/main.go
+	go build -o whereamid cmd/server/main.go
+
+run-local:
+	go build -o whereamid cmd/server/main.go
+	DATAFILE=geodata/worldcities.zip@worldcities.csv PORT=7777 ./whereamid
+
 docker:
 	docker build -t whereamid:latest .
