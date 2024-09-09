@@ -13,7 +13,7 @@ import (
 
 var (
 	fileName string
-	port     int = 7777
+	port     int
 )
 
 func init() {

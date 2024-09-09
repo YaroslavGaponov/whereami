@@ -10,7 +10,7 @@ import (
 type WhereAmI struct {
 	store  geodata.GeoData
 	cities map[string]*geodata.GeoPoint
-	search *geosearch.GeoSearch
+	search geosearch.GeoSearch
 }
 
 type PointResponse struct {
