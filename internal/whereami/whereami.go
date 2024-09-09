@@ -13,7 +13,7 @@ type WhereAmI struct {
 	search geosearch.GeoSearch
 }
 
-type PointResponse struct {
+type WhereAmIResponse struct {
 	Id       string        `json:"id"`
 	Lat      float64       `json:"lat"`
 	Lng      float64       `json:"lng"`
@@ -42,11 +42,10 @@ func (w *WhereAmI) Initialize() {
 	}
 }
 
-func (w *WhereAmI) Search(lat, lng float64) *PointResponse {
+func (w *WhereAmI) Search(lat, lng float64) *WhereAmIResponse {
 	result := w.search.Search(geosearch.Point{Latitude: lat, Longitude: lng})
 	city := w.cities[result.Object.Id]
-
-	return &PointResponse{
+	return &WhereAmIResponse{
 		Id:       result.Object.Id,
 		Lat:      city.Lat,
 		Lng:      city.Lng,

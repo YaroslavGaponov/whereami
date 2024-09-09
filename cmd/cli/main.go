@@ -8,14 +8,17 @@ import (
 	"github.com/YaroslavGaponov/whereami/internal/whereami"
 )
 
+var (
+	fileName string
+)
+
+func init() {
+	fileName = os.Getenv("DATA_FILE")
+}
+
 func main() {
 
 	fmt.Println("whereami cli tool")
-
-	fileName := os.Getenv("DATAFILE")
-	if len(fileName) == 0 {
-		fmt.Println("geodata file is not found")
-	}
 
 	store := geodata.New(fileName)
 	if err := store.Open(); err != nil {

@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,29 +10,29 @@ import (
 )
 
 type Server struct {
-	port     int
+	addr     string
 	router   *chi.Mux
 	whereAmI *whereami.WhereAmI
 }
 
-func New(port int, whereAmI *whereami.WhereAmI) Server {
+func New(addr string, whereAmI *whereami.WhereAmI) Server {
 
 	server := Server{
-		port:     port,
+		addr:     addr,
 		router:   chi.NewRouter(),
 		whereAmI: whereAmI,
 	}
 
-	server.router.Get("/whereami", server.SearchHandler)
+	server.router.Get("/whereami", server.searchHandler)
 
 	return server
 }
 
 func (server *Server) Run() error {
-	return http.ListenAndServe(fmt.Sprintf(":%d", server.port), server.router)
+	return http.ListenAndServe(server.addr, server.router)
 }
 
-func (server *Server) SearchHandler(w http.ResponseWriter, r *http.Request) {
+func (server *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	lat := r.URL.Query().Get("lat")
 	flat, err := strconv.ParseFloat(lat, 64)

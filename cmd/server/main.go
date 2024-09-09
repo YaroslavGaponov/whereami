@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/YaroslavGaponov/whereami/internal/geodata"
 	"github.com/YaroslavGaponov/whereami/internal/server"
@@ -12,21 +11,13 @@ import (
 )
 
 var (
-	fileName string
-	port     int
+	fileName      string
+	serverAddress string
 )
 
 func init() {
-	fileName = os.Getenv("DATAFILE")
-	if len(fileName) == 0 {
-		log.Fatal("geodata file is not found")
-	}
-
-	var err error
-	port, err = strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	fileName = os.Getenv("DATA_FILE")
+	serverAddress = os.Getenv("SERVER_ADDRESS")
 }
 
 func main() {
@@ -46,6 +37,6 @@ func main() {
 	w.Initialize()
 	fmt.Println("done")
 
-	server := server.New(port, w)
-	server.Run()
+	server := server.New(serverAddress, w)
+	log.Fatal(server.Run())
 }

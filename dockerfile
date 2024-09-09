@@ -7,8 +7,8 @@ RUN go build -o whereamid cmd/server/main.go
 FROM alpine:latest
 WORKDIR /whereami
 COPY --from=builder /whereami/whereamid .
-COPY geodata/worldcities.zip .
-ENV DATAFILE=/whereami/worldcities.zip@worldcities.csv
-ENV PORT=8080
+COPY data/worldcities.zip .
+ENV DATA_FILE="/whereami/worldcities.zip@worldcities.csv"
+ENV SERVER_ADDRESS=":8080"
 EXPOSE 8080
 CMD ["./whereamid"]
