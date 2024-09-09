@@ -34,15 +34,15 @@ func main() {
 		var lat, lng float64
 		fmt.Print("\nlat lng: ")
 		fmt.Scan(&lat, &lng)
-		city, result := w.Search(lat, lng)
+		result := w.Search(lat, lng)
 
-		fmt.Printf("Object %s\n", result.Object.Id)
-		fmt.Printf("Lat %f\n", city.Lat)
-		fmt.Printf("Lng %f\n", city.Lng)
+		fmt.Printf("Object %s\n", result.Id)
+		fmt.Printf("Lat %f\n", result.Lat)
+		fmt.Printf("Lng %f\n", result.Lng)
 		fmt.Printf("Distance %.2f km\n", result.Distance)
 		fmt.Printf("Took %v\n", result.Took)
-		fmt.Printf("City %s\n", city.City)
-		fmt.Printf("Country %s\n", city.Country)
+		fmt.Printf("City %s\n", result.City)
+		fmt.Printf("Country %s\n", result.Country)
 	}
 
 }
