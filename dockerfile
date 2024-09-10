@@ -8,6 +8,7 @@ FROM alpine:latest
 WORKDIR /whereami
 COPY --from=builder /whereami/whereamid .
 COPY data/worldcities.zip .
+ENV LOG_LEVEL="info" 
 ENV DATA_FILE="/whereami/worldcities.zip@worldcities.csv"
 ENV SERVER_ADDRESS=":8080"
 EXPOSE 8080

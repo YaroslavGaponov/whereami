@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/YaroslavGaponov/whereami/internal/geodata"
 	"github.com/YaroslavGaponov/whereami/internal/whereami"
+	"github.com/YaroslavGaponov/whereami/pkg/logger"
 )
 
 var (
@@ -18,7 +20,9 @@ func init() {
 
 func main() {
 
-	fmt.Println("whereami cli tool")
+	log := logger.New()
+
+	log.Info("whereami cli tool")
 
 	store := geodata.New(fileName)
 	if err := store.Open(); err != nil {
@@ -27,7 +31,8 @@ func main() {
 	}
 	defer store.Close()
 
-	w := whereami.New(store)
+	ctx := context.WithValue(context.Background(), "logger", log)
+	w := whereami.New(ctx, store)
 
 	fmt.Print("initializing...")
 	w.Initialize()

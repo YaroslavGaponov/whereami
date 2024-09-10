@@ -2,12 +2,14 @@ package whereami
 
 import (
 	"time"
+	"context"
 
 	"github.com/YaroslavGaponov/geosearch"
 	"github.com/YaroslavGaponov/whereami/internal/geodata"
 )
 
 type WhereAmI struct {
+	ctx context.Context
 	store  geodata.GeoData
 	cities map[string]*geodata.GeoPoint
 	search geosearch.GeoSearch
@@ -23,8 +25,9 @@ type WhereAmIResponse struct {
 	Country  string        `json:"country"`
 }
 
-func New(store geodata.GeoData) *WhereAmI {
+func New(ctx context.Context, store geodata.GeoData) *WhereAmI {
 	return &WhereAmI{
+		ctx: ctx,
 		store:  store,
 		cities: make(map[string]*geodata.GeoPoint),
 		search: geosearch.New(5, 500),

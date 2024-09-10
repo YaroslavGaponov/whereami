@@ -1,28 +1,33 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/YaroslavGaponov/whereami/internal/geodata"
 	"github.com/YaroslavGaponov/whereami/internal/server"
 	"github.com/YaroslavGaponov/whereami/internal/whereami"
+	"github.com/YaroslavGaponov/whereami/pkg/logger"
 )
 
 var (
+	logLevel      string
 	fileName      string
 	serverAddress string
 )
 
 func init() {
+	logLevel = os.Getenv("LOG_LEVEL")
 	fileName = os.Getenv("DATA_FILE")
 	serverAddress = os.Getenv("SERVER_ADDRESS")
 }
 
 func main() {
+	log := logger.New()
+	log.SetLogLevel(logLevel)
 
-	fmt.Println("whereami service")
+	log.Info("whereami service")
 
 	store := geodata.New(fileName)
 	if err := store.Open(); err != nil {
@@ -31,12 +36,16 @@ func main() {
 	}
 	defer store.Close()
 
-	w := whereami.New(store)
+	ctx := context.WithValue(context.Background(),"logger", log)
 
-	fmt.Print("initializing...")
+	w := whereami.New(ctx,store)
+
+	log.Info("initializing...")
 	w.Initialize()
-	fmt.Println("done")
-
+	
+	log.Info("searvice is ready...")
 	server := server.New(serverAddress, w)
-	log.Fatal(server.Run())
+	if err := server.Run(); err != nil {
+		log.Fatal("%v",err)
+	}
 }
