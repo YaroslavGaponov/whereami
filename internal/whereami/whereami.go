@@ -1,15 +1,16 @@
 package whereami
 
 import (
-	"time"
 	"context"
+	"time"
 
 	"github.com/YaroslavGaponov/geosearch"
 	"github.com/YaroslavGaponov/whereami/internal/geodata"
+	"github.com/YaroslavGaponov/whereami/pkg/logger"
 )
 
 type WhereAmI struct {
-	ctx context.Context
+	ctx    context.Context
 	store  geodata.GeoData
 	cities map[string]*geodata.GeoPoint
 	search geosearch.GeoSearch
@@ -27,7 +28,7 @@ type WhereAmIResponse struct {
 
 func New(ctx context.Context, store geodata.GeoData) *WhereAmI {
 	return &WhereAmI{
-		ctx: ctx,
+		ctx:    ctx,
 		store:  store,
 		cities: make(map[string]*geodata.GeoPoint),
 		search: geosearch.New(5, 500),
@@ -35,6 +36,9 @@ func New(ctx context.Context, store geodata.GeoData) *WhereAmI {
 }
 
 func (w *WhereAmI) Initialize() {
+	log := logger.GetLogger(w.ctx)
+	log.Info("initializing...")
+	points := 0
 	for {
 		point, err := w.store.Read()
 		if err != nil {
@@ -42,10 +46,14 @@ func (w *WhereAmI) Initialize() {
 		}
 		w.cities[point.Id] = point
 		w.search.AddObject(&geosearch.Object{Id: point.Id, Point: geosearch.Point{Latitude: point.Lat, Longitude: point.Lng}})
+		points++
 	}
+	log.Info("%d points loaded", points)
+	log.Info("done")
 }
 
 func (w *WhereAmI) Search(lat, lng float64) *WhereAmIResponse {
+	logger.GetLogger(w.ctx).Debug("search lat=%f lng=%f", lat, lng)
 	result := w.search.Search(geosearch.Point{Latitude: lat, Longitude: lng})
 	city := w.cities[result.Object.Id]
 	return &WhereAmIResponse{

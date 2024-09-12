@@ -36,15 +36,12 @@ func main() {
 	}
 	defer store.Close()
 
-	ctx := context.WithValue(context.Background(),"logger", log)
+	ctx := log.AddToContext(context.Background())
 
 	w := whereami.New(ctx,store)
-
-	log.Info("initializing...")
 	w.Initialize()
 	
-	log.Info("searvice is ready...")
-	server := server.New(serverAddress, w)
+	server := server.New(ctx, serverAddress, w)
 	if err := server.Run(); err != nil {
 		log.Fatal("%v",err)
 	}

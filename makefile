@@ -4,7 +4,7 @@ build:
 		go build -o whereamid cmd/server/main.go
 
 run: build
-		LOG_LEVEL="info" DATA_FILE="data/worldcities.zip@worldcities.csv" SERVER_ADDRESS=":8080" ./whereamid
+		LOG_LEVEL="all" DATA_FILE="data/worldcities.zip@worldcities.csv" SERVER_ADDRESS=":8080" ./whereamid
 
 
 build_docker:

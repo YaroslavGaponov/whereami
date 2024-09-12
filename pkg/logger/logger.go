@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
@@ -14,6 +15,10 @@ const (
 	FATAL = 1 << 5
 )
 
+var (
+	LOGGER = struct{}{}
+)
+
 type Logger struct {
 	level uint8
 }
@@ -24,8 +29,18 @@ func New() Logger {
 	}
 }
 
+func (l *Logger) AddToContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, LOGGER, l)
+}
+
+func GetLogger(ctx context.Context) *Logger {
+	return ctx.Value(LOGGER).(*Logger)
+}
+
 func (l *Logger) SetLogLevel(level string) {
 	switch level {
+	case "silent":
+		l.level = 0
 	case "trace":
 		l.level = INFO | WARN | ERROR | FATAL | DEBUG | TRACE
 	case "debug":
@@ -40,8 +55,8 @@ func (l *Logger) SetLogLevel(level string) {
 }
 
 func (l *Logger) log(level uint8, format string, a ...any) {
-	fmt.Printf("%v ",time.DateTime)
 	if (l.level & level) == level {
+		fmt.Printf("%v [%s]\t", time.DateTime, level2Text(level))
 		fmt.Printf(format, a...)
 		fmt.Println()
 	}
@@ -69,4 +84,22 @@ func (l *Logger) Error(format string, a ...any) {
 
 func (l *Logger) Fatal(format string, a ...any) {
 	l.log(FATAL, format, a...)
+}
+
+func level2Text(level uint8) string {
+	switch level {
+	case TRACE:
+		return "TRACE"
+	case DEBUG:
+		return "DEBUG"
+	case INFO:
+		return "INFO"
+	case WARN:
+		return "WARN"
+	case ERROR:
+		return "ERROR"
+	case FATAL:
+		return "FATAL"
+	}
+	return "UNKNOWN"
 }

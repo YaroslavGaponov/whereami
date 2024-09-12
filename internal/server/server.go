@@ -1,23 +1,26 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/YaroslavGaponov/whereami/internal/whereami"
+	"github.com/YaroslavGaponov/whereami/pkg/logger"
 	"github.com/go-chi/chi/v5"
 )
 
 type Server struct {
+	ctx      context.Context
 	addr     string
 	router   *chi.Mux
 	whereAmI *whereami.WhereAmI
 }
 
-func New(addr string, whereAmI *whereami.WhereAmI) Server {
-
+func New(ctx context.Context, addr string, whereAmI *whereami.WhereAmI) Server {
 	server := Server{
+		ctx:      ctx,
 		addr:     addr,
 		router:   chi.NewRouter(),
 		whereAmI: whereAmI,
@@ -29,6 +32,7 @@ func New(addr string, whereAmI *whereami.WhereAmI) Server {
 }
 
 func (server *Server) Run() error {
+	logger.GetLogger(server.ctx).Info("server is starting...")
 	return http.ListenAndServe(server.addr, server.router)
 }
 
