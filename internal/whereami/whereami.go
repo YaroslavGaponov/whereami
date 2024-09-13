@@ -14,7 +14,7 @@ type WhereAmI struct {
 	ctx         context.Context
 	store       geodata.GeoData
 	cities      map[string]*geodata.GeoPoint
-	search      geosearch.GeoSearch
+	search      geosearch.GeoSearchFast
 	initialized bool
 }
 
@@ -37,7 +37,7 @@ func New(ctx context.Context, store geodata.GeoData) *WhereAmI {
 		ctx:         ctx,
 		store:       store,
 		cities:      make(map[string]*geodata.GeoPoint),
-		search:      geosearch.New(5, 500),
+		search:      geosearch.GeoSearchFastNew(500),
 		initialized: false,
 	}
 }

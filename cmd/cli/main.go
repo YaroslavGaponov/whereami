@@ -42,7 +42,10 @@ func main() {
 		var lat, lng float64
 		fmt.Print("\nlat lng: ")
 		fmt.Scan(&lat, &lng)
-		result := w.Search(lat, lng)
+		result, err := w.Search(lat, lng)
+		if err != nil {
+			fmt.Errorf("error: %v", err)
+		}
 
 		fmt.Printf("Object %s\n", result.Id)
 		fmt.Printf("Lat %f\n", result.Lat)
