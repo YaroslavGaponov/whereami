@@ -2,6 +2,7 @@ package whereami
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/YaroslavGaponov/geosearch"
@@ -10,10 +11,11 @@ import (
 )
 
 type WhereAmI struct {
-	ctx    context.Context
-	store  geodata.GeoData
-	cities map[string]*geodata.GeoPoint
-	search geosearch.GeoSearch
+	ctx         context.Context
+	store       geodata.GeoData
+	cities      map[string]*geodata.GeoPoint
+	search      geosearch.GeoSearch
+	initialized bool
 }
 
 type WhereAmIResponse struct {
@@ -26,12 +28,17 @@ type WhereAmIResponse struct {
 	Country  string        `json:"country"`
 }
 
+var (
+	notInitializedErr = errors.New("whereami is not initialized")
+)
+
 func New(ctx context.Context, store geodata.GeoData) *WhereAmI {
 	return &WhereAmI{
-		ctx:    ctx,
-		store:  store,
-		cities: make(map[string]*geodata.GeoPoint),
-		search: geosearch.New(5, 500),
+		ctx:         ctx,
+		store:       store,
+		cities:      make(map[string]*geodata.GeoPoint),
+		search:      geosearch.New(5, 500),
+		initialized: false,
 	}
 }
 
@@ -48,11 +55,15 @@ func (w *WhereAmI) Initialize() {
 		w.search.AddObject(&geosearch.Object{Id: point.Id, Point: geosearch.Point{Latitude: point.Lat, Longitude: point.Lng}})
 		points++
 	}
+	w.initialized = true
 	log.Info("%d points loaded", points)
 	log.Info("done")
 }
 
-func (w *WhereAmI) Search(lat, lng float64) *WhereAmIResponse {
+func (w *WhereAmI) Search(lat, lng float64) (*WhereAmIResponse, error) {
+	if !w.initialized {
+		return nil, notInitializedErr
+	}
 	logger.GetLogger(w.ctx).Debug("search lat=%f lng=%f", lat, lng)
 	result := w.search.Search(geosearch.Point{Latitude: lat, Longitude: lng})
 	city := w.cities[result.Object.Id]
@@ -64,5 +75,5 @@ func (w *WhereAmI) Search(lat, lng float64) *WhereAmIResponse {
 		Took:     result.Took,
 		City:     city.City,
 		Country:  city.Country,
-	}
+	}, nil
 }

@@ -39,7 +39,7 @@ func main() {
 	ctx := log.AddToContext(context.Background())
 
 	w := whereami.New(ctx,store)
-	w.Initialize()
+	go w.Initialize()
 	
 	server := server.New(ctx, serverAddress, w)
 	if err := server.Run(); err != nil {

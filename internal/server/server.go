@@ -50,10 +50,13 @@ func (server *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 	}
 
-	point := server.whereAmI.Search(flat, flng)
-
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(point); err != nil {
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	point, err := server.whereAmI.Search(flat, flng)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(point); err != nil {
+			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		}
 	}
 }
