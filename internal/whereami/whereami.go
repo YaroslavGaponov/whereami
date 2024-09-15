@@ -29,7 +29,7 @@ type WhereAmIResponse struct {
 }
 
 var (
-	notInitializedErr = errors.New("whereami is not initialized")
+	errNotInitialized = errors.New("whereami is not initialized")
 )
 
 func New(ctx context.Context, store geodata.IGeoDataDriver) *WhereAmI {
@@ -66,7 +66,7 @@ func (w *WhereAmI) IsInitialized() bool {
 
 func (w *WhereAmI) Search(lat, lng float64) (*WhereAmIResponse, error) {
 	if !w.initialized {
-		return nil, notInitializedErr
+		return nil, errNotInitialized
 	}
 	logger.GetLogger(w.ctx).Debug("search lat=%f lng=%f", lat, lng)
 	result := w.search.Search(geosearch.Point{Latitude: lat, Longitude: lng})
