@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/YaroslavGaponov/whereami/internal/geodata"
+	"github.com/YaroslavGaponov/whereami/internal/geodatadriver"
 	"github.com/YaroslavGaponov/whereami/internal/whereami"
 	"github.com/YaroslavGaponov/whereami/pkg/logger"
 )
@@ -24,7 +24,7 @@ func main() {
 
 	log.Info("whereami cli tool")
 
-	store := geodata.New(fileName)
+	store := geodatadriver.New(fileName)
 	if err := store.Open(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

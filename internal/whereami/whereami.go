@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/YaroslavGaponov/geosearch"
-	"github.com/YaroslavGaponov/whereami/internal/geodata"
+	"github.com/YaroslavGaponov/whereami/pkg/geodata"
 	"github.com/YaroslavGaponov/whereami/pkg/logger"
 )
 
 type WhereAmI struct {
 	ctx         context.Context
-	store       geodata.GeoData
+	store       geodata.IGeoDataDriver
 	cities      map[string]*geodata.GeoPoint
 	search      geosearch.GeoSearchFast
 	initialized bool
@@ -32,7 +32,7 @@ var (
 	notInitializedErr = errors.New("whereami is not initialized")
 )
 
-func New(ctx context.Context, store geodata.GeoData) *WhereAmI {
+func New(ctx context.Context, store geodata.IGeoDataDriver) *WhereAmI {
 	return &WhereAmI{
 		ctx:         ctx,
 		store:       store,
