@@ -27,6 +27,8 @@ func New(ctx context.Context, addr string, whereAmI *whereami.WhereAmI) Server {
 	}
 
 	server.router.Get("/whereami", server.searchHandler)
+	server.router.Get("/alive", server.alive)
+	server.router.Get("/ready", server.ready)
 
 	return server
 }
@@ -58,5 +60,18 @@ func (server *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(point); err != nil {
 			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 		}
+	}
+}
+
+func (server *Server) alive(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func (server *Server) ready(w http.ResponseWriter, r *http.Request) {
+	initialized := server.whereAmI.IsInitialized()
+	if initialized {
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 }

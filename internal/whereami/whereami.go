@@ -60,6 +60,10 @@ func (w *WhereAmI) Initialize() {
 	log.Info("done")
 }
 
+func (w *WhereAmI) IsInitialized() bool {
+	return w.initialized
+}
+
 func (w *WhereAmI) Search(lat, lng float64) (*WhereAmIResponse, error) {
 	if !w.initialized {
 		return nil, notInitializedErr
