@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/YaroslavGaponov/whereami/pkg/flags"
 	"github.com/YaroslavGaponov/whereami/pkg/geodata"
 )
 
@@ -79,6 +80,7 @@ func (driver *GeoDataDriver) Read() (*geodata.GeoPoint, error) {
 		}
 		p.Lng = lng
 		p.Country = parts[4]
+		p.Flag, _ = flags.GetCountryFlag(parts[5])
 		p.Id = parts[10]
 		return &p, nil
 	}

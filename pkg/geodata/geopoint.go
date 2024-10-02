@@ -7,4 +7,5 @@ type GeoPoint struct {
 	Lng       float64
 	Country   string
 	Id        string
+	Flag      string
 }

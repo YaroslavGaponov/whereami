@@ -26,6 +26,7 @@ type WhereAmIResponse struct {
 	Took     time.Duration `json:"took"`
 	City     string        `json:"city"`
 	Country  string        `json:"country"`
+	Flag     string        `json:"flag"`
 }
 
 var (
@@ -79,5 +80,6 @@ func (w *WhereAmI) Search(lat, lng float64) (*WhereAmIResponse, error) {
 		Took:     result.Took,
 		City:     city.City,
 		Country:  city.Country,
+		Flag:     city.Flag,
 	}, nil
 }
